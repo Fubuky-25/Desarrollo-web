@@ -7,6 +7,18 @@ if (isset($_SESSION['user_id'])) {
     header('Location: ../../dashboard/');
     exit; // siempre que haya un redireccionamiento 
 }
+
+$msgerror = '';
+try {
+   if (isset($_SESSION['error']['login'])) {
+       $msgerror = $_SESSION['error']['login'];
+   } else {
+       $msgerror = 0;
+   }
+} catch (\Throwable $th) {
+    $msgerror = 'exception';
+}
+
 ?>
 
 <!doctype html>
@@ -85,7 +97,16 @@ if (isset($_SESSION['user_id'])) {
         <div class="card-body login-card-body">
           <p class="login-box-msg">Hola ingresa tus credenciales</p>
 
-          <form action="validate/" method="post">
+          <?php if($msgerror !=0){ ?>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>¡Error!</strong> <?php echo $msgerror; ?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            <?php
+            }
+            ?>
+    
+          <form action="auth/" method="post">
             <div class="input-group mb-3">
               <input type="email" class="form-control" placeholder="Ingrese su correo electrónico" name="username" id="username"/>
               <div class="input-group-text">
