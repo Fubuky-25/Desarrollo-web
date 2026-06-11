@@ -4,7 +4,7 @@ session_start();
 
 if (isset($_SESSION['user_id'])) {
     // el usuario ya esta logueado
-    header('Location: ../../dashboard/');
+    header('Location: ../../backoffice/');
     exit; // siempre que haya un redireccionamiento 
 }
 
@@ -26,7 +26,7 @@ try {
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AdminLTE 4 | Login </title>
+    <title><?php echo $_SESSION['titulos']['webTitle']; ?> | Login</title>
 
     <!--begin::Accessibility Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />

@@ -20,7 +20,8 @@ if (isset($_SESSION['user_id'])) {
         // credenciales correctas
         $_SESSION['user_id'] = 1; // asignar un ID de usuario a la sesión
         $_SESSION['username'] = 'proyecto'; // opcional: almacenar el nombre de usuario en la sesión
-        header('Location: ../../../dashboard/');
+        $_SESSION['error'] = ['login' => ''];
+        header('Location: ../../../backoffice/');
         exit; // siempre que haya un redireccionamiento 
     }
 
