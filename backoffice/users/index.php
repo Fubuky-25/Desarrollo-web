@@ -2,7 +2,13 @@
 session_start();
 $ruta = ['assets' => '../../', 'components' => '../'];
 $_SESSION ['ruta'] = $ruta;
+require_once '../mvc/v1/conexion.php';
+require_once '../mvc/v1/models/usuario.php';
+
+$usuario = new Usuario();
+$usuarios = $usuario->getAll();
 ?>
+
 <!doctype html>
 <html lang="en">
   <!--begin::Head-->
@@ -133,6 +139,14 @@ $_SESSION ['ruta'] = $ruta;
                         </div>
                     <?php } ?>
 
+                    <?php if (!empty($_SESSION['errores']['items']['telefono'])) { ?>
+                          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                              <strong>Error teléfono:</strong>
+                              <?php echo $_SESSION['errores']['items']['telefono']; ?>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                          </div>
+                    <?php } ?>
+
                     <?php if (!empty($_SESSION['errores']['items']['password'])) { ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <strong>Error contraseña:</strong> <?php echo $_SESSION['errores']['items']['password']; ?>
@@ -146,6 +160,18 @@ $_SESSION ['ruta'] = $ruta;
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php } ?>
+                    <?php if(isset($_SESSION['errores']['items']['rol'])){ ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error rol:</strong>
+                            <?php echo $_SESSION['errores']['items']['rol']; ?>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                            </button>
+                        </div>
+                      <?php } ?>
                 <?php } ?>
                 <?php
                 if (isset($_SESSION['errores'])) {
@@ -155,79 +181,309 @@ $_SESSION ['ruta'] = $ruta;
                 </div>
               <!--end::Col-->
               <!--begin::Col-->
+              <?php if(isset($_SESSION['mensaje'])){ ?>
+
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+                    <strong>Éxito:</strong>
+
+                    <?php
+                        echo $_SESSION['mensaje'];
+                        unset($_SESSION['mensaje']);
+                    ?>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+
+                <?php } ?>
               <div class="col-md-12">
                 <!--begin::DataTable-->
                 <div class="card card-primary card-outline mb-4">
                   <!--begin::Header-->
                   <div class="card-header">
-                    <div class="card-title">Lista de usuarios del sistema</div>
+                    <div class="d-flex justify-content-between align-items-center">
+
+                      <div class="card-title">
+                          Lista de usuarios del sistema
+                      </div>
+
+                      <span class="badge bg-primary">
+
+                          <?php echo count($usuarios); ?>
+
+                          usuarios
+
+                      </span>
+                     </div>
                   </div>
                   <!--end::Header-->
                   <!--begin::Body-->
-                  <div class="card-body p-0">
-                    <table class="table table-sm" role="table">
+                    <div class="row p-3">
+
+                      <div class="col-md-4">
+
+                          <input
+                              type="text"
+                              id="buscadorUsuarios"
+                              class="form-control"
+                              placeholder="🔍 Buscar usuario...">
+
+                      </div>
+
+                      <div class="col-md-3">
+
+                          <select
+                              id="filtroRol"
+                              class="form-select">
+
+                              <option value="">
+                                  Todos los roles
+                              </option>
+
+                              <option value="Administrador">
+                                  Administrador
+                              </option>
+
+                              <option value="Vendedor">
+                                  Vendedor
+                              </option>
+
+                              <option value="Usuario">
+                                  Usuario
+                              </option>
+
+                          </select>
+
+                      </div>
+
+                      <div class="col-md-3">
+
+                          <select
+                              id="filtroEstado"
+                              class="form-select">
+
+                              <option value="">
+                                  Todos los estados
+                              </option>
+
+                              <option value="Activo">
+                                  Activo
+                              </option>
+
+                              <option value="Inactivo">
+                                  Inactivo
+                              </option>
+
+                          </select>
+
+                      </div>
+
+                    </div>
+
+
+                    <table id="tablaUsuarios"class="table table-sm" role="table">
                       <thead>
                         <tr>
-                          <th style="width: 10px" scope="col">#</th>
-                          <th scope="col">Nombre Completo</th>
-                          <th scope="col">Estado</th>
-                          <th style="width: 40px" scope="col">Label</th>
+                          <th style="width: 10px">#</th>
+
+                          <th>Nombre Completo</th>
+
+                          <th>Correo</th>
+
+                          <th>Teléfono</th>
+
+                          <th>Rol</th>
+
+                          <th>Estado</th>
+
+                          <th style="width: 40px">
+                              Acciones
+                          </th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr class="align-middle">
-                          <td>1.</td>
-                          <td>Sergio Crespo</td>
-                          <td>
-                            <span class="badge text-bg-success">Activo</span>
-                          </td>
-                          <td>
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-list"></i>
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Ver</a></li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Editar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Encender</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Apagar</a>
-                                </li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr class="align-middle">
-                          <td>2.</td>
-                          <td>Maria Crespo</td>
-                          <td>
-                            <span class="badge text-bg-success">Activo</span>
-                          </td>
-                          <td>
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-list"></i>
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Ver</a></li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Editar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Encender</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item" href="#">Apagar</a>
-                                </li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
+                          
+                        <tbody>
+
+                          <?php foreach($usuarios as $usuario){ ?>
+
+                          <tr class="align-middle">
+
+                              <td>
+                                  <?php echo $usuario['id']; ?>
+                              </td>
+
+                              <td>
+                                  <?php
+                                      echo $usuario['nombres']
+                                      . ' ' .
+                                      $usuario['apellidos'];
+                                  ?>
+                              </td>
+
+                              <td>
+                                  <?php echo $usuario['correo']; ?>
+                              </td>
+
+                              <td>
+                                  <?php echo $usuario['telefono']; ?>
+                              </td>
+
+                              <td>
+
+                                  <?php
+
+                                  switch($usuario['rol']){
+
+                                      case 1:
+
+                                          echo '
+                                          <span class="badge bg-danger">
+                                              Administrador
+                                          </span>';
+
+                                          break;
+
+                                      case 2:
+
+                                          echo '
+                                          <span class="badge bg-warning text-dark">
+                                              Vendedor
+                                          </span>';
+
+                                          break;
+
+                                      default:
+
+                                          echo '
+                                          <span class="badge bg-info">
+                                              Usuario
+                                          </span>';
+
+                                          break;
+                                  }
+
+                                  ?>
+
+                              </td>
+
+                              <td>
+
+                                  <?php if($usuario['activo']){ ?>
+
+                                      <span class="badge bg-success">
+                                          Activo
+                                      </span>
+
+                                  <?php } else { ?>
+
+                                      <span class="badge bg-danger">
+                                          Inactivo
+                                      </span>
+
+                                  <?php } ?>
+
+                              </td>
+
+                              <td>
+
+                                  <div class="btn-group">
+
+                                      <button
+                                          type="button"
+                                          class="btn btn-sm btn-secondary dropdown-toggle"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded="false">
+
+                                          <i class="bi bi-list"></i>
+
+                                      </button>
+
+                                      <ul class="dropdown-menu">
+
+                                          <li>
+
+                                              <a
+                                                  class="dropdown-item btn-ver-usuario"
+
+                                                  href="#"
+
+                                                  data-id="<?php echo $usuario['id']; ?>"
+
+                                                  data-nombres="<?php echo $usuario['nombres']; ?>"
+
+                                                  data-apellidos="<?php echo $usuario['apellidos']; ?>"
+
+                                                  data-correo="<?php echo $usuario['correo']; ?>"
+
+                                                  data-telefono="<?php echo $usuario['telefono']; ?>"
+
+                                                  data-rol="<?php echo $usuario['rol']; ?>"
+
+                                                  data-activo="<?php echo $usuario['activo']; ?>"
+
+                                                  data-bs-toggle="modal"
+                                                  data-bs-target="#modalVerUsuario">
+
+                                                  Ver
+
+                                              </a>
+
+                                          </li>
+
+                                          <li>
+
+                                              <a class="dropdown-item" href="#">
+                                                  Editar
+                                              </a>
+
+                                          </li>
+
+                                          <?php if($usuario['activo']){ ?>
+
+                                              <li>
+
+                                                  <a
+                                                      class="dropdown-item text-danger"
+                                                      href="./status/?id=<?php echo $usuario['id']; ?>&estado=0">
+
+                                                      Apagar
+
+                                                  </a>
+
+                                              </li>
+
+                                          <?php } else { ?>
+
+                                              <li>
+
+                                                  <a
+                                                      class="dropdown-item text-success"
+                                                      href="./status/?id=<?php echo $usuario['id']; ?>&estado=1">
+
+                                                      Encender
+
+                                                  </a>
+
+                                              </li>
+
+                                          <?php } ?>
+
+                                      </ul>
+
+                                  </div>
+
+                              </td>
+
+                          </tr>
+
+                          <?php } ?>
+
+                          </tbody>
                     </table>
                   </div>
                   <!--end::Body-->
@@ -266,6 +522,10 @@ $_SESSION ['ruta'] = $ruta;
                     <label for="lastname">Apellido</label>
                   </div>
 
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="">
+                    <label for="telefono">Telefono</label>
+                  </div>
 
                   <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
@@ -279,7 +539,9 @@ $_SESSION ['ruta'] = $ruta;
 
                   <div class="form-floating">
                     <select class="form-select" id="rol" name="rol" aria-label="Floating label select example">
-                      <option selected>Seleccione un rol</option>
+                      <option value="" selected>
+                        Seleccione un rol
+                      </option>
                       <option value="1">Administrador</option>
                       <option value="2">Vendedor</option>
                       <option value="3">Usuario</option>
@@ -297,6 +559,107 @@ $_SESSION ['ruta'] = $ruta;
           </div>
         </div>
         
+        <div
+          class="modal fade"
+          id="modalVerUsuario"
+          tabindex="-1">
+
+          <div class="modal-dialog modal-dialog-centered">
+
+              <div class="modal-content">
+
+                  <div class="modal-header">
+
+                      <h5 class="modal-title">
+                          Detalle Usuario
+                      </h5>
+
+                      <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal">
+                      </button>
+
+                  </div>
+
+                  <div class="modal-body text-center">
+
+                      <i
+                          class="bi bi-person-circle"
+                          style="font-size: 6rem;">
+                      </i>
+
+                      <h3
+                          class="mt-3"
+                          id="detalleNombre">
+                      </h3>
+
+                      <hr>
+
+                      <div class="row text-start">
+
+                          <div class="col-4">
+                              <strong>Correo</strong>
+                          </div>
+
+                          <div class="col-8"
+                              id="detalleCorreo">
+                          </div>
+
+                      </div>
+
+                      <br>
+
+                      <div class="row text-start">
+
+                          <div class="col-4">
+                              <strong>Teléfono</strong>
+                          </div>
+
+                          <div class="col-8"
+                              id="detalleTelefono">
+                          </div>
+
+                      </div>
+
+                      <br>
+
+                      <div class="row text-start">
+
+                          <div class="col-4">
+                              <strong>Rol</strong>
+                          </div>
+
+                          <div class="col-8"
+                              id="detalleRol">
+                          </div>
+
+                      </div>
+
+                      <br>
+
+                      <div class="row text-start">
+
+                          <div class="col-4">
+                              <strong>Estado</strong>
+                          </div>
+
+                          <div class="col-8"
+                              id="detalleEstado">
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
+
+          </div>
+
+        </div>
+
+
+
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
@@ -374,6 +737,175 @@ $_SESSION ['ruta'] = $ruta;
     </script>
     <!--end::Bootstrap Toasts-->
     <!--end::Script-->
+    <script>
+
+      document
+      .querySelectorAll('.btn-ver-usuario')
+       .forEach(function(btn){
+
+        btn.addEventListener('click', function(){
+
+                                  document.getElementById(
+                                      'detalleNombre'
+                                  ).innerHTML =
+                                      this.dataset.nombres
+                                      + ' ' +
+                                      this.dataset.apellidos;
+
+                                  document.getElementById(
+                                      'detalleCorreo'
+                                  ).innerHTML =
+                                      this.dataset.correo;
+
+                                  document.getElementById(
+                                      'detalleTelefono'
+                                  ).innerHTML =
+                                      this.dataset.telefono;
+
+                                  let rol = 'Usuario';
+
+                                  if(this.dataset.rol == 1){
+                                      rol = 'Administrador';
+                                  }
+
+                                  if(this.dataset.rol == 2){
+                                      rol = 'Vendedor';
+                                  }
+
+                                  document.getElementById(
+                                      'detalleRol'
+                                  ).innerHTML = rol;
+
+                                  document.getElementById(
+                                      'detalleEstado'
+                                  ).innerHTML =
+                                      this.dataset.activo == 1
+                                      ? 'Activo'
+                                      : 'Inactivo';
+
+                              });
+
+                          });
+
+                          </script>
+                          <script>
+
+                            document.addEventListener(
+                                'DOMContentLoaded',
+                                function(){
+
+                                    const buscador =
+                                        document.getElementById(
+                                            'buscadorUsuarios'
+                                        );
+
+                                    const filtroRol =
+                                        document.getElementById(
+                                            'filtroRol'
+                                        );
+
+                                    const filtroEstado =
+                                        document.getElementById(
+                                            'filtroEstado'
+                                        );
+
+                                    function filtrarTabla(){
+
+                                        let texto =
+                                            buscador.value.toLowerCase();
+
+                                        let rol =
+                                            filtroRol.value.toLowerCase();
+
+                                        let estado =
+                                            filtroEstado.value.toLowerCase();
+
+                                        let filas =
+                                            document.querySelectorAll(
+                                                '#tablaUsuarios tbody tr'
+                                            );
+
+                                        filas.forEach(function(fila){
+
+                                            let nombre =
+                                                fila.cells[1]
+                                                .textContent
+                                                .toLowerCase();
+
+                                            let correo =
+                                                fila.cells[2]
+                                                .textContent
+                                                .toLowerCase();
+
+                                            let telefono =
+                                                fila.cells[3]
+                                                .textContent
+                                                .toLowerCase();
+
+                                            let rolFila =
+                                                fila.cells[4]
+                                                .textContent
+                                                .trim()
+                                                .toLowerCase();
+
+                                            let estadoFila =
+                                                fila.cells[5]
+                                                .textContent
+                                                .trim()
+                                                .toLowerCase();
+
+                                            let coincideBusqueda =
+                                                nombre.includes(texto)
+                                                ||
+                                                correo.includes(texto)
+                                                ||
+                                                telefono.includes(texto);
+
+                                            let coincideRol =
+                                                rol === ''
+                                                ||
+                                                rolFila.includes(rol);
+
+                                            let coincideEstado =
+                                                estado === ''
+                                                ||
+                                                estadoFila.includes(estado);
+
+                                            if(
+                                                coincideBusqueda
+                                                &&
+                                                coincideRol
+                                                &&
+                                                coincideEstado
+                                            ){
+                                                fila.style.display = '';
+                                            }
+                                            else{
+                                                fila.style.display = 'none';
+                                            }
+
+                                        });
+
+                                    }
+
+                                    buscador.addEventListener(
+                                        'keyup',
+                                        filtrarTabla
+                                    );
+
+                                    filtroRol.addEventListener(
+                                        'change',
+                                        filtrarTabla
+                                    );
+
+                                    filtroEstado.addEventListener(
+                                        'change',
+                                        filtrarTabla
+                                    );
+
+                                });
+
+                            </script>
   </body>
   <!--end::Body-->
 </html>

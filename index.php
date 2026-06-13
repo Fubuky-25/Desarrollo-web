@@ -1,7 +1,7 @@
 <?php
 
-// iniciar o reanudar la sesion del usuario actual 
-//session_start();
+session_start();
+//echo '<PRE>';
 //var_dump($_SERVER);
 //ECHO '</PRES>';
 
